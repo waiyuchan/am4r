@@ -1,10 +1,13 @@
+import os.path
+
 import pandas as pd
 
 
 class DataSet:
 
     def __init__(self):
-        self.dataset_path = "../data/{}.txt"
+        self.project_path = os.path.abspath(os.path.join(os.getcwd(), "../.."))
+        self.dataset_path = self.project_path + "/data/{}.txt"
         self.dataset = {"label": [], "text": []}
         self.POSITIVE_LABEL, self.NEGATIVE_LABEL = 0, 1
 

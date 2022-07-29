@@ -1,1 +1,8 @@
+numpy
 pandas
+pytorch-pretrained-bert
+sklearn
+torch
+torchvision
+tqdm
+tensorflow
