@@ -6,6 +6,7 @@ from tqdm import tqdm
 from core.bert.model import ClassifyModel
 from core.bert.processor import DataUtils
 from utils.utils import Utils
+from utils.logger import logger
 
 
 def train():
@@ -15,9 +16,10 @@ def train():
     vocab_pretrained_model_path = "../../pretrained_model/bert-base-uncased/bert-base-uncased-vocab.txt"
     pretrained_model_path = "../../pretrained_model/bert-base-uncased"
     train_iter, valid_iter, total_train_batch, total_valid_batch = DataUtils(
-        pretrained_model_name_or_path=vocab_pretrained_model_path, max_seq_len=max_seq_len, batch_size=batch_size).load_data()
+        pretrained_model_name_or_path=vocab_pretrained_model_path, max_seq_len=max_seq_len,
+        batch_size=batch_size).load_data()
     model = ClassifyModel(pretrained_model_path, label_nums=2, is_lock=True)
-    print(model)
+    logger.info(model)
 
     optimizer = BertAdam(model.parameters(), lr=5e-05)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -46,9 +48,9 @@ def train():
         model.eval()
 
         result = Utils.evaluate_accuracy(valid_iter, model, device, total_valid_batch)
-        print('epoch %d, loss %.4f, train acc %.3f, time: %.3f' %
-              (epoch + 1, train_loss_count / n, train_accuracy_count / n, (time.time() - start)))
-        print(result)
+        logger.info('epoch %d, loss %.4f, train acc %.3f, time: %.3f' %
+                    (epoch + 1, train_loss_count / n, train_accuracy_count / n, (time.time() - start)))
+        logger.info(result)
 
     torch.save(model, "../../trained_model/model_fine_tuned_with_base_bert.bin")
 
