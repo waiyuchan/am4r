@@ -1,13 +1,10 @@
-import os.path
-
 import pandas as pd
 
 
 class DataSet:
 
-    def __init__(self):
-        self.project_path = os.path.abspath(os.path.join(os.getcwd(), "../.."))
-        self.dataset_path = self.project_path + "/data/{}.txt"
+    def __init__(self, dataset_path):
+        self.dataset_path = dataset_path + "{}.txt"
         self.dataset = {"label": [], "text": []}
         self.POSITIVE_LABEL, self.NEGATIVE_LABEL = 0, 1
 
@@ -33,9 +30,8 @@ class DataSet:
         self.dataset["text"] = texts
         return self.dataset
 
-
-if __name__ == '__main__':
-    train_data = DataSet().get_data(dataset_type="train")
-    valid_data = DataSet().get_data(dataset_type="valid")
-    test_data = DataSet().get_data(dataset_type="test")
-    print(pd.DataFrame(train_data))
+# if __name__ == '__main__':
+#     train_data = DataSet().get_data(dataset_type="train")
+#     valid_data = DataSet().get_data(dataset_type="valid")
+#     test_data = DataSet().get_data(dataset_type="test")
+#     print(pd.DataFrame(train_data))

@@ -19,7 +19,7 @@ class Utils:
                 labels = batch_data[-1]
                 output = net(*batch_data[:-1])
                 predictions = output.softmax(dim=1).argmax(dim=1)
-                predicted_labels.append(predictions.detach().cpu.numpy())
+                predicted_labels.append(predictions.detach().cpu().numpy())
                 true_labels.append(labels.detach().cpu().numpy())
 
         return classification_report(np.concatenate(true_labels), np.concatenate(predicted_labels))

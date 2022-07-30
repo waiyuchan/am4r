@@ -1,6 +1,6 @@
 import math
 from concurrent.futures import ThreadPoolExecutor
-
+import pandas as pd
 import torch
 from pytorch_pretrained_bert import BertTokenizer
 from torch.utils.data import TensorDataset, DataLoader
@@ -20,8 +20,8 @@ class DataProcessor(object):
         self.pool = ThreadPoolExecutor(max_workers=max_workers)
 
     def get_input(self, dataset, max_seq_len=30):
-        sentences = dataset["text"]
-        labels = dataset["label"]
+        sentences = dataset.iloc[:, 1].tolist()
+        labels = dataset.iloc[:, 2].tolist()
         token_seq = list(self.pool.map(self.bert_tokenizer.tokenize, sentences))
         result = list(self.pool.map(self.trunate_and_pad, token_seq, [max_seq_len] * len(token_seq)))
         seqs = [i[0] for i in result]
@@ -62,22 +62,22 @@ class DataUtils:
     def __init__(self, pretrained_model_name_or_path, max_seq_len, batch_size):
         self.max_seq_len = max_seq_len
         self.batch_size = batch_size
-        self.train_dataset = DataSet().get_data(dataset_type="train")
-        self.valid_dataset = DataSet().get_data(dataset_type="valid")
+        self.raw_train_data = pd.read_excel("../../data/train_and_valid.xlsx", sheet_name="train")
+        self.raw_valid_data = pd.read_excel("../../data/train_and_valid.xlsx", sheet_name="valid")
         self.pretrained_model_name_or_path = pretrained_model_name_or_path
         self.bert_tokenizer = BertTokenizer.from_pretrained(
             pretrained_model_name_or_path=self.pretrained_model_name_or_path,
             do_lower_case=True)
         self.processor = DataProcessor(bert_tokenizer=self.bert_tokenizer)
-        self.train_data = self.processor.get_input(self.train_dataset, self.max_seq_len)
-        self.valid_data = self.processor.get_input(self.valid_dataset, self.max_seq_len)
+        self.train_data = self.processor.get_input(self.raw_train_data, self.max_seq_len)
+        self.valid_data = self.processor.get_input(self.raw_valid_data, self.max_seq_len)
 
     def load_data(self):
         train_iter = DataLoader(dataset=self.train_data, batch_size=self.batch_size)
-        valid_iter = DataLoader(dataset=self.valid_dataset, batch_size=self.batch_size)
+        valid_iter = DataLoader(dataset=self.valid_data, batch_size=self.batch_size)
 
-        total_train_batch = math.ceil(len(self.train_dataset) / self.batch_size)
-        total_valid_batch = math.ceil(len(self.valid_dataset) / self.batch_size)
+        total_train_batch = math.ceil(len(self.raw_train_data) / self.batch_size)
+        total_valid_batch = math.ceil(len(self.raw_valid_data) / self.batch_size)
 
         return train_iter, valid_iter, total_train_batch, total_valid_batch
 
