@@ -29,9 +29,3 @@ class DataSet:
         self.dataset["label"] = labels
         self.dataset["text"] = texts
         return self.dataset
-
-# if __name__ == '__main__':
-#     train_data = DataSet().get_data(dataset_type="train")
-#     valid_data = DataSet().get_data(dataset_type="valid")
-#     test_data = DataSet().get_data(dataset_type="test")
-#     print(pd.DataFrame(train_data))

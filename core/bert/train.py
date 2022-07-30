@@ -20,7 +20,6 @@ def train():
         batch_size=batch_size).load_data()
     model = ClassifyModel(pretrained_model_path, label_nums=2, is_lock=True)
     logger.info(model)
-
     optimizer = BertAdam(model.parameters(), lr=5e-05)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
@@ -34,7 +33,6 @@ def train():
                                      total=total_train_batch):
             batch_data = tuple(t.to(device) for t in batch_data)
             batch_seqs, batch_seq_masks, batch_seq_segements, batch_labels = batch_data
-
             logits = model(batch_seqs, batch_seq_masks, batch_seq_segements)
             loss = loss_func(logits, batch_labels)
             loss.backward()
@@ -44,15 +42,13 @@ def train():
             n += batch_labels.shape[0]
             optimizer.step()
             optimizer.zero_grad()
-
         model.eval()
-
         result = Utils.evaluate_accuracy(valid_iter, model, device, total_valid_batch)
         logger.info('epoch %d, loss %.4f, train acc %.3f, time: %.3f' %
                     (epoch + 1, train_loss_count / n, train_accuracy_count / n, (time.time() - start)))
         logger.info(result)
-
-    torch.save(model, "../../trained_model/model_fine_tuned_with_base_bert.bin")
+        torch.save(model.state_dict(), "../../trained_model/model_with_base_bert_epoch_{}_loss_{}_acc_{}.pt"
+                   .format('%d' % (epoch + 1), '%.4f' % (train_loss_count / n), '%.3f' % (train_accuracy_count / n)))
 
 
 if __name__ == '__main__':

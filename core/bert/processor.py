@@ -1,11 +1,10 @@
 import math
 from concurrent.futures import ThreadPoolExecutor
+
 import pandas as pd
 import torch
 from pytorch_pretrained_bert import BertTokenizer
 from torch.utils.data import TensorDataset, DataLoader
-
-from core.bert.dataset import DataSet
 
 
 class DataProcessor(object):
@@ -80,11 +79,3 @@ class DataUtils:
         total_valid_batch = math.ceil(len(self.raw_valid_data) / self.batch_size)
 
         return train_iter, valid_iter, total_train_batch, total_valid_batch
-
-
-if __name__ == '__main__':
-    batch_size = 32
-    max_seq_len = 200
-    pretrained_model_path = "../../pretrained_model/bert-base-uncased/bert-base-uncased-vocab.txt"
-    train_iter, valid_iter, total_train_batch, total_valid_batch = DataUtils(
-        pretrained_model_name_or_path=pretrained_model_path, max_seq_len=max_seq_len, batch_size=batch_size).load_data()
