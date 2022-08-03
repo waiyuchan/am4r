@@ -1,8 +1,6 @@
 numpy
 pandas
-pytorch-pretrained-bert
-sklearn
+transformers
 torch
-torchvision
 tqdm
 openpyxl

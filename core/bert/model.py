@@ -1,25 +1,20 @@
 from torch import nn
-from pytorch_pretrained_bert import BertTokenizer, BertModel
+from transformers import BertModel
 
 
-class ClassifyModel(nn.Module):
+class BertClassifier(nn.Module):
 
-    def __init__(self, pretrained_model_name_or_path, label_nums, is_lock=False):
-        super(ClassifyModel, self).__init__()
-        self.bert_model = BertModel.from_pretrained(pretrained_model_name_or_path)
-        config = self.bert_model.config
-        self.dropout = nn.Dropout(config.hidden_dropout_prob)
-        # self.classifier = nn.Linear(768, label_nums)
-        self.classifier = nn.Linear(1024, label_nums)
-        if is_lock:
-            for name, param in self.bert_model.named_parameters():
-                if name.startswith("pooler"):
-                    continue
-                else:
-                    param.requires_grad_(False)
+    def __init__(self):
+        super(BertClassifier, self).__init__()
+        self.bert = BertModel.from_pretrained('bert-base-uncased')
+        dropout = 0.5
+        self.dropout = nn.Dropout(dropout)
+        self.linear = nn.Linear(768, 2)
+        self.relu = nn.ReLU()
 
-    def forward(self, input_ids, token_type_ids=None, attention_mask=None):
-        _, pooled = self.bert_model(input_ids, token_type_ids, attention_mask, output_all_encoded_layers=False)
-        pooled = self.dropout(pooled)
-        logits = self.classifier(pooled)
-        return logits
+    def forward(self, input_id, mask):
+        _, pooled_output = self.bert(input_ids=input_id, attention_mask=mask, return_dict=False)
+        dropout_output = self.dropout(pooled_output)
+        linear_output = self.linear(dropout_output)
+        final_layer = self.relu(linear_output)
+        return final_layer

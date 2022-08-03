@@ -1,0 +1,8 @@
+model_with_base_bert_4_0.018_0.964_0.024_0.936.pt
+model_with_large_bert_4_0.016_0.970_0.022_0.942.pt
+
+model_with_base_bert_and_lstm_10_0.001_0.995_0.032_0.944.pt
+model_with_base_large_and_lstm_10_0.001_0.993_0.026_0.947.pt
+
+model_with_base_bert_and_bilstm_10_0.001_0.995_0.032_0.947.pt
+model_with_base_large_and_bilstm_10_0.011_0.983_0.026_0.952.pt

@@ -1,31 +1,38 @@
+import numpy as np
 import pandas as pd
+import torch.utils.data
+from transformers import BertTokenizer
+
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
 
-class DataSet:
+class Dataset(torch.utils.data.Dataset):
 
-    def __init__(self, dataset_path):
-        self.dataset_path = dataset_path + "{}.txt"
-        self.dataset = {"label": [], "text": []}
-        self.POSITIVE_LABEL, self.NEGATIVE_LABEL = 0, 1
+    def __init__(self, df):
+        self.labels = [label for label in df["label"]]
+        self.texts = [tokenizer(text, padding="max_length", max_length=512, truncation=True, return_tensors="pt")
+                      for text in df["sentence"]]
 
-    def get_data(self, dataset_type):
-        # Train dataset size: 2420, Valid dataset size: 632, Test dataset size: 888
-        dataset = pd.read_table(self.dataset_path.format(dataset_type), sep="\t")
-        texts = []
-        labels = []
-        for item in dataset.itertuples():
-            positive_text = "{} {} {} And since {}, {}.".format(
-                item.debateTitle, item.debateInfo, item.reason, item.warrant0, item.claim) \
-                if item.correctLabelW0orW1 == 0 else "{} {} {} And since {}, {}.". \
-                format(item.debateTitle, item.debateInfo, item.reason, item.warrant1, item.claim)
-            negative_text = "{} {} {} And since {}, {}.".format(
-                item.debateTitle, item.debateInfo, item.reason, item.warrant1, item.claim) \
-                if item.correctLabelW0orW1 == 0 else "{} {} {} And since {}, {}.". \
-                format(item.debateTitle, item.debateInfo, item.reason, item.warrant0, item.claim)
-            texts.append(positive_text)
-            labels.append(0)
-            texts.append(negative_text)
-            labels.append(1)
-        self.dataset["label"] = labels
-        self.dataset["text"] = texts
-        return self.dataset
+    def classes(self):
+        return self.labels
+
+    def __len__(self):
+        return len(self.labels)
+
+    def get_batch_labels(self, idx):
+        return np.array(self.labels[idx])
+
+    def get_batch_texts(self, idx):
+        return self.texts[idx]
+
+    def __getitem__(self, idx):
+        batch_texts = self.get_batch_texts(idx)
+        batch_y = self.get_batch_labels(idx)
+        return batch_texts, batch_y
+
+
+if __name__ == '__main__':
+    csv_data = pd.read_csv("data/train.csv")
+    df = pd.DataFrame(csv_data)
+    print(df)
+    Dataset(df).classes()
