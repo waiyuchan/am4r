@@ -13,8 +13,10 @@ def train():
     batch_size = 32
     max_seq_len = 200
     epochs = 4
-    vocab_pretrained_model_path = "../../pretrained_model/bert-base-uncased/bert-base-uncased-vocab.txt"
-    pretrained_model_path = "../../pretrained_model/bert-base-uncased"
+    # vocab_pretrained_model_path = "../../pretrained_model/bert-base-uncased/bert-base-uncased-vocab.txt"
+    # pretrained_model_path = "../../pretrained_model/bert-base-uncased"
+    vocab_pretrained_model_path = "../../pretrained_model/bert-large-uncased/bert-large-uncased-vocab.txt"
+    pretrained_model_path = "../../pretrained_model/bert-large-uncased"
     train_iter, valid_iter, total_train_batch, total_valid_batch = DataUtils(
         pretrained_model_name_or_path=vocab_pretrained_model_path, max_seq_len=max_seq_len,
         batch_size=batch_size).load_data()
@@ -47,7 +49,9 @@ def train():
         logger.info('epoch %d, loss %.4f, train acc %.3f, time: %.3f' %
                     (epoch + 1, train_loss_count / n, train_accuracy_count / n, (time.time() - start)))
         logger.info(result)
-        torch.save(model.state_dict(), "../../trained_model/model_with_base_bert_epoch_{}_loss_{}_acc_{}.pt"
+        # torch.save(model.state_dict(), "../../trained_model/model_with_base_bert_epoch_{}_loss_{}_acc_{}.pt"
+        #            .format('%d' % (epoch + 1), '%.4f' % (train_loss_count / n), '%.3f' % (train_accuracy_count / n)))
+        torch.save(model.state_dict(), "../../trained_model/model_with_large_bert_epoch_{}_loss_{}_acc_{}.pt"
                    .format('%d' % (epoch + 1), '%.4f' % (train_loss_count / n), '%.3f' % (train_accuracy_count / n)))
 
 

@@ -9,7 +9,8 @@ class ClassifyModel(nn.Module):
         self.bert_model = BertModel.from_pretrained(pretrained_model_name_or_path)
         config = self.bert_model.config
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
-        self.classifier = nn.Linear(768, label_nums)
+        # self.classifier = nn.Linear(768, label_nums)
+        self.classifier = nn.Linear(1024, label_nums)
         if is_lock:
             for name, param in self.bert_model.named_parameters():
                 if name.startswith("pooler"):

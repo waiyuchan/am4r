@@ -19,6 +19,18 @@ print("train dataset size: {}, valid dataset size: {}, test dataset size: {}".fo
 # df = pd.DataFrame(train_data_list, columns=["", "sentence", "label"])
 # df.to_excel(dataset_path + "train_and_valid.xlsx", index=False)
 
-valid_data_list = [[i, valid_data["text"][i], valid_data["label"][i]] for i in range(valid_size)]
-df = pd.DataFrame(valid_data_list, columns=["", "sentence", "label"])
-df.to_excel(dataset_path + "valid.xlsx", index=False)
+# valid_data_list = [[i, valid_data["text"][i], valid_data["label"][i]] for i in range(valid_size)]
+# df = pd.DataFrame(valid_data_list, columns=["", "sentence", "label"])
+# df.to_excel(dataset_path + "valid.xlsx", index=False)
+
+# train_data_list = [[train_data["text"][i], train_data["label"][i]] for i in range(train_size)]
+# df = pd.DataFrame(train_data_list, columns=["sentence", "label"])
+# df.to_csv(dataset_path + "train.csv", index=False)
+
+# valid_data_list = [[valid_data["text"][i], valid_data["label"][i]] for i in range(valid_size)]
+# df = pd.DataFrame(valid_data_list, columns=["sentence", "label"])
+# df.to_csv(dataset_path + "valid.csv", index=False)
+
+# test_data_list = [[test_data["text"][i], test_data["label"][i]] for i in range(test_size)]
+# df = pd.DataFrame(test_data_list, columns=["sentence", "label"])
+# df.to_csv(dataset_path + "test.csv", index=False)
