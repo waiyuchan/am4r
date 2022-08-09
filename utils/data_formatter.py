@@ -3,7 +3,7 @@ import pandas as pd
 
 from core.bert.dataset import DataSet
 
-""" 用于转换数据格式 """
+""" for converting data formats """
 
 project_path = os.path.abspath(os.path.dirname(__file__))
 dataset_path = project_path + "/data/"

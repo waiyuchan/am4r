@@ -57,7 +57,7 @@ plt.plot(x_axix, bert_base_bilstm, color='yellow', label='BERT-Base-BiLSTM')
 plt.plot(x_axix, bert_large, color='skyblue', label='BERT-Large')
 plt.plot(x_axix, bert_large_lstm, color='blue', label='BERT-Large-LSTM')
 plt.plot(x_axix, bert_large_bilstm, color='purple', label='BERT-Large-BiLSTM')
-plt.legend()  # 显示图例
+plt.legend()  # show legend
 plt.xticks(x_axix)
 plt.xlabel('epoches')
 plt.ylabel('rate')
@@ -78,7 +78,7 @@ plt.plot(x_axix, bert_base_bilstm, color='yellow', label='BERT-Base-BiLSTM')
 plt.plot(x_axix, bert_large, color='skyblue', label='BERT-Large')
 plt.plot(x_axix, bert_large_lstm, color='blue', label='BERT-Large-LSTM')
 plt.plot(x_axix, bert_large_bilstm, color='purple', label='BERT-Large-BiLSTM')
-plt.legend()  # 显示图例
+plt.legend()  # show legend
 plt.xticks(x_axix)
 plt.xlabel('epoches')
 plt.ylabel('rate')

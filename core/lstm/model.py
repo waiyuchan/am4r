@@ -7,7 +7,7 @@ class BertLSTMClassifier(nn.Module):
 
     def __init__(self, network_type="BiLSTM"):
         super().__init__()
-        # 基础参数配置
+        # Basic parameter configuration
         self.network_type = network_type
         self.hidden_layers_size = 768
         self.hidden_dim = int(self.hidden_layers_size / 2)
@@ -35,11 +35,11 @@ class BertLSTMClassifier(nn.Module):
 
     def forward(self, input_x, hidden):
         batch_size = input_x.size(0)
-        input_x = self.bert(input_x)[0]  # 生成bert的字向量
+        input_x = self.bert(input_x)[0]  # Generate the word vector of bert
         lstm_output, (h_n, h_c) = self.lstm(input_x, hidden)
 
         if self.bidirectional:
-            # BiLSTM: 正向最后一层，最后一个时刻/反向最后一层，最后一个时刻
+            # BiLSTM: Forward last layer, last moment/reverse last layer, last moment
             hidden_last_left, hidden_last_right = h_n[-2], h_n[-1]
             hidden_last_out = torch.cat([hidden_last_left, hidden_last_right], dim=-1)
         else:
@@ -52,7 +52,7 @@ class BertLSTMClassifier(nn.Module):
     def init_hidden(self, batch_size):
         weight = next(self.parameters()).data
         number = 2 if self.bidirectional else 1
-        # 判断是否使用GPU
+        # Determine whether to use the GPU
         cuda_status = torch.cuda.is_available()
         hidden = (
             weight.new(self.n_layers * number, batch_size, self.hidden_dim).zero_().float().cuda(),

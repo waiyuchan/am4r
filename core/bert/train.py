@@ -15,11 +15,11 @@ def train(model, train_data, valid_data, learning_rate, epochs):
     train_loader = torch.utils.data.DataLoader(train, batch_size=8, shuffle=True)
     valid_loader = torch.utils.data.DataLoader(valid, batch_size=8, shuffle=True)
 
-    # 判断是否使用GPU
+    # Determine whether to use the GPU
     cuda_status = torch.cuda.is_available()
     device = torch.device("cuda" if cuda_status else "cpu")
 
-    # 定义损失函数以及优化器
+    # Define the loss function and optimizer
     loss_function = nn.CrossEntropyLoss()
     optimizer = Adam(model.parameters(), lr=learning_rate)
 
@@ -28,46 +28,46 @@ def train(model, train_data, valid_data, learning_rate, epochs):
         loss_function = loss_function.cuda()
 
     for epoch in range(epochs):
-        # 定义训练集的准确率和损失率
+        # Define the accuracy and loss rates for the training set
         accuracy_of_train, loss_of_train = 0, 0
         for train_item, train_label in tqdm(train_loader):
             train_label = train_label.to(device)
             mask = train_item["attention_mask"].to(device)
             input_id = train_item["input_ids"].squeeze(1).to(device)
 
-            # 通过模型获得输出
+            # Get the output from the model
             output = model(input_id, mask)
 
-            # 计算损失值
+            # Calculate the loss value
             batch_loss = loss_function(output, train_label)
             loss_of_train += batch_loss.item()
 
-            # 计算准确率
+            # Calculate accuracy
             accuracy = (output.argmax(dim=1) == train_label).sum().item()
             accuracy_of_train += accuracy
 
-            # 模型更新
+            # Model update
             model.zero_grad()
             batch_loss.backward()
             optimizer.step()
 
-        # 模型验证
+        # Model validation
         accuracy_of_valid, loss_of_valid = 0, 0
-        # 不需要计算梯度
+        # No need to compute gradients
         with torch.no_grad():
             for valid_item, valid_label in valid_loader:
                 valid_label = valid_label.to(device)
                 mask = valid_item["attention_mask"].to(device)
                 input_id = valid_item["input_ids"].squeeze(1).to(device)
 
-                # 通过模型获得输出
+                # Get the output from the model
                 output = model(input_id, mask)
 
-                # 计算损失值
+                # Calculate the loss value
                 batch_loss = loss_function(output, valid_label)
                 loss_of_valid += batch_loss.item()
 
-                # 计算准确率
+                # Calculate accuracy
                 accuracy = (output.argmax(dim=1) == valid_label).sum().item()
                 accuracy_of_valid += accuracy
 
